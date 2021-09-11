@@ -1,0 +1,62 @@
+﻿@model IEnumerable<Meeting>
+
+@{
+    ViewData["Title"] = "Meetings";
+}
+
+<h1>Meetings</h1>
+
+@if (this.User.IsInRole("Admin") || this.User.IsInRole("Trainer"))
+{
+    <p>
+        <a asp-controller="Meetings" asp-action="Create">Create New</a>
+    </p>
+}
+
+<div class="web-fitness-card">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Topic
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Trainer)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Date)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Price)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Training.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Trainer.FirstName) @Html.DisplayFor(modelItem => item.Trainer.LastName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Date)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Price)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", new { controller = "Meetings", id = item.MeetId }) |
+                        @Html.ActionLink("Details", "Details", new { controller = "Meetings", id = item.MeetId }) |
+                        @Html.ActionLink("Delete", "Delete", new { controller = "Meetings", id = item.MeetId })
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</div>

@@ -1,0 +1,168 @@
+﻿@model IEnumerable<User>
+
+@{
+    ViewData["Title"] = "Trainers";
+}
+
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script>
+    $(document).ready(() => {
+        $('#closeToast').click(() => $('#modelToast').toast('hide'));
+
+        const validate = () => {
+            let isError = false;
+            const errorsList = $('<ul/>');
+
+            // Validate Phone
+            const numbersRegex = /^[0-9]+$/; // only numbers
+            const phone = $('#Phone').val();
+
+            if (phone && !phone.match(numbersRegex)) {
+                const error = $('<li/>').text('Phone can only contain numbers');
+                errorsList.append(error);
+                isError = true;
+            }
+
+
+            // Validate City
+            const city = $('#City').val();
+            const textRegext = /^[a-zA-Z ]*$/; // only text
+
+            if (city && !city.match(textRegext)) {
+                const error = $('<li/>').text('City can only contain letters');
+                errorsList.append(error);
+                isError = true;
+            }
+
+            if (isError) {
+                $('#modelToast').toast('show')
+                $('#modelToastBody').html(errorsList);
+                $('#filter').prop('disabled', true)
+            } else {
+                $('#filter').prop('disabled', false);
+            }
+        };
+
+        $('#Phone').change(validate);
+        $('#City').change(validate);
+
+    });
+</script>
+
+<div aria-live="polite" aria-atomic="true" style="position: relative;">
+    <div id="modelToast" class="toast" style="position: fixed; top: 86px; right: 24px;" data-delay="10000">
+        <div class="toast-header">
+            <strong class="mr-auto">Web Fitness</strong>
+            <small>Error</small>
+            <button id="closeToast" type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div id="modelToastBody" class="toast-body text-danger pr-4 mr-3">
+        </div>
+    </div>
+</div>
+
+<h1>Trainers</h1>
+<div class="my-5">
+    <div class="firstSearch" style="width: 350px">
+        <form asp-controller="Trainers" asp-action="Search" class="form-group d-flex">
+            <input class="form-control blackBorder mr-2" type="text" name="SearchString" placeholder="Search">
+            <button type="submit" class="btn btn-dark submitButtons">Search</button>
+        </form>
+    </div>
+    <br />
+    <div class="secondSearch blackBorder">
+        <form class="form-inline" asp-controller="Trainers" asp-action="MultipleSearch" style="float:left;">
+            <input id="City" class="form-control blackBorder mr-2" type="text" id="city" placeholder="City" name="city">
+            <input class="form-control blackBorder mr-2" type="text" id="fname" placeholder="First Name" name="fname">
+            <input id="Phone" class="form-control blackBorder mr-2" type="text" id="city" placeholder="Phone" name="phonenumber">
+            <input class="form-control blackBorder mr-2" type="text" id="gender" placeholder="Gender" name="gender">
+
+            <button type="submit" class="btn btn-dark submitButtons" id="filter">Filter</button>
+        </form>
+    </div>
+</div>
+<div id="table">
+    <br />
+    <div class="web-fitness-card">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Email)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.FirstName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.LastName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.PhoneNumber)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Gender)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Address)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.City)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Email)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FirstName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.LastName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PhoneNumber)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Gender)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Address)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.City)
+                        </td>
+                        <td>
+                            @if (this.User.IsInRole("Admin"))
+                            {
+                                <span>
+                                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+
+                                </span>
+                            }
+                            <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                            @if (this.User.IsInRole("Admin"))
+                            {
+                                <span>
+                                    | <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                                </span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    @if (ViewBag.err != "" && ViewBag.err != null)
+    {
+        <p style="display: inline-block;"> @ViewBag.err </p>
+    }
+
+</div>
