@@ -1,4 +1,4 @@
-﻿using ColmanGym.Areas.Identity.Models;
+﻿using ColmanGym.Areas.Identity.Data;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -24,7 +24,7 @@ namespace ColmanGym.Models
         [Range(0, 1000)]
         public int Price { get; set; }
 
-        public User Trainer { get; set; }
+        public ApplicationUser Trainer { get; set; }
         public Training Training { get; set; }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)

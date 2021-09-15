@@ -1,12 +1,12 @@
-﻿using ColmanGym.Areas.Identity.Models;
+﻿using ColmanGym.Areas.Identity.Data;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace ColmanGym.Data
 {
-    public class IdentityColmanGymContext : IdentityDbContext<User>
+    public class ColmanGymIdentityContext : IdentityDbContext<ApplicationUser>
     {
-        public IdentityColmanGymContext(DbContextOptions<IdentityColmanGymContext> options)
+        public ColmanGymIdentityContext(DbContextOptions<ColmanGymIdentityContext> options)
         : base(options)
         {
         }

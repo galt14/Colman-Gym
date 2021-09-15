@@ -10,7 +10,7 @@ using ColmanGym.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Identity;
-using ColmanGym.Areas.Identity.Models;
+using ColmanGym.Areas.Identity.Data;
 
 namespace ColmanGym
 {
@@ -30,6 +30,8 @@ namespace ColmanGym
 
             services.AddDbContext<ColmanGymContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("ColmanGymContext")));
+
+            services.AddRazorPages();
 
             services.AddMvc(config =>
             {
@@ -72,11 +74,12 @@ namespace ColmanGym
             await CreateRoles(provider);
 
         }
+
         private async Task CreateRoles(IServiceProvider serviceProvider)
         {
             //initializing custom roles 
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-            var userManager = serviceProvider.GetRequiredService<UserManager<User>>();
+            var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
             string[] roleNames = { "Admin", "Trainer", "Customer" };
 
             IdentityResult roleResult;
@@ -99,7 +102,7 @@ namespace ColmanGym
             if (_user == null)
             {
                 //Here you could create the super admin who will maintain the web app
-                var poweruser = new User
+                var poweruser = new ApplicationUser
                 {
                     UserName = "admin",
                     Email = "admin@gym.com",

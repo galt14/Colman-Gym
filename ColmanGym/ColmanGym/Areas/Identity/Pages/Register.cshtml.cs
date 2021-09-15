@@ -1,4 +1,4 @@
-﻿using ColmanGym.Areas.Identity.Models;
+﻿using ColmanGym.Areas.Identity.Data;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -20,12 +20,12 @@ namespace ColmanGym.Areas.Identity.Pages
     [AllowAnonymous]
     public class RegisterModel : PageModel
     {
-        private readonly SignInManager<User> _signInManager;
-        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
 
-        public RegisterModel(UserManager<User> userManager, SignInManager<User> signInManager,
+        public RegisterModel(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger, IEmailSender emailSender)
         {
             _userManager = userManager;
@@ -105,7 +105,7 @@ namespace ColmanGym.Areas.Identity.Pages
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new User
+                var user = new ApplicationUser
                 {
                     UserName = Input.Email,
                     Email = Input.Email,

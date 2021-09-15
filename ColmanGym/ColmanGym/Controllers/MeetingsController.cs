@@ -7,19 +7,19 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ColmanGym.Data;
 using ColmanGym.Models;
-using ColmanGym.Areas.Identity.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using ColmanGym.Areas.Identity.Data;
 
 namespace ColmanGym.Controllers
 {
     public class MeetingsController : Controller
     {
         private readonly ColmanGymContext _context;
-        private readonly UserManager<User> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 
 
-        public MeetingsController(ColmanGymContext context, UserManager<User> userManager)
+        public MeetingsController(ColmanGymContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;
@@ -112,7 +112,7 @@ namespace ColmanGym.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["TrainerId"] = new SelectList(_context.Set<User>(), "Id", "Id", meeting.TrainerId);
+            ViewData["TrainerId"] = new SelectList(_context.Set<ApplicationUser>(), "Id", "Id", meeting.TrainerId);
             ViewData["TrainerID"] = GetRelevantTrainersToSelect();
 
             return View(meeting);
@@ -139,7 +139,7 @@ namespace ColmanGym.Controllers
                 return View("~/Views/Home/Index.cshtml");
             }
 
-            ViewData["TrainerId"] = new SelectList(_context.Set<User>(), "Id", "Id", meeting.TrainerId);
+            ViewData["TrainerId"] = new SelectList(_context.Set<ApplicationUser>(), "Id", "Id", meeting.TrainerId);
             ViewData["TrainerID"] = GetRelevantTrainersToSelect();
 
             return View(meeting);
@@ -187,7 +187,7 @@ namespace ColmanGym.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["TrainerId"] = new SelectList(_context.Set<User>(), "Id", "Id", meeting.TrainerId);
+            ViewData["TrainerId"] = new SelectList(_context.Set<ApplicationUser>(), "Id", "Id", meeting.TrainerId);
             ViewData["TrainerID"] = this.GetRelevantTrainersToSelect();
 
             return View(meeting);
@@ -240,7 +240,7 @@ namespace ColmanGym.Controllers
             {
                 var currentUser = _context.AspNetUsers.Find(this._userManager.GetUserId(User));
 
-                return new SelectList(new List<User> { currentUser }, "Id", "Email");
+                return new SelectList(new List<ApplicationUser> { currentUser }, "Id", "Email");
             }
 
             return new SelectList(_context.AspNetUsers.Where(t => t.IsTrainer).ToList(), "Id", "Email");

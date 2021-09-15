@@ -1,4 +1,4 @@
-﻿@model IEnumerable<User>
+﻿@model IEnumerable<ApplicationUser>
 
 @{
     ViewData["Title"] = "Trainers";
@@ -74,9 +74,9 @@
     <br />
     <div class="secondSearch blackBorder">
         <form class="form-inline" asp-controller="Trainers" asp-action="MultipleSearch" style="float:left;">
-            <input id="City" class="form-control blackBorder mr-2" type="text" id="city" placeholder="City" name="city">
+            <input id="City" class="form-control blackBorder mr-2" type="text" placeholder="City" name="city">
             <input class="form-control blackBorder mr-2" type="text" id="fname" placeholder="First Name" name="fname">
-            <input id="Phone" class="form-control blackBorder mr-2" type="text" id="city" placeholder="Phone" name="phonenumber">
+            <input id="Phone" class="form-control blackBorder mr-2" type="text" placeholder="Phone" name="phonenumber">
             <input class="form-control blackBorder mr-2" type="text" id="gender" placeholder="Gender" name="gender">
 
             <button type="submit" class="btn btn-dark submitButtons" id="filter">Filter</button>
