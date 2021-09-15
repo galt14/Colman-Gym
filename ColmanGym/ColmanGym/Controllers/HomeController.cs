@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ColmanGym.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ColmanGym.Controllers
 {
@@ -16,6 +17,17 @@ namespace ColmanGym.Controllers
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
+        }
+
+        [Authorize(Roles = "Admin")]
+        public IActionResult Graphs()
+        {
+            return View();
+        }
+
+        public IActionResult Video()
+        {
+            return View();
         }
 
         public IActionResult Index()

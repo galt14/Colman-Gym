@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ColmanGym.Data;
 using ColmanGym.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ColmanGym.Controllers
 {
@@ -25,25 +26,44 @@ namespace ColmanGym.Controllers
             return View(await _context.Trainings.ToListAsync());
         }
 
+        public async Task<IActionResult> Search(string searchString)
+        {
+            var trainings = from a in _context.Trainings
+                        select a;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                trainings = trainings.Where(s => s.Name.Contains(searchString) || s.Target.Contains(searchString));
+            }
+
+            var ids = trainings.Select(s => s.TrainingId);
+            var trainingsToShow = await _context.Trainings.Where(x => ids.Contains(x.TrainingId)).ToListAsync();
+
+            return View("~/Views/Trainings/index.cshtml", trainingsToShow);
+        }
+
         // GET: Trainings/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
-                return NotFound();
+                ViewData["NotFound"] = "The requested training is no longer available";
+                return View("~/Views/Home/Index.cshtml");
             }
 
             var training = await _context.Trainings
                 .FirstOrDefaultAsync(m => m.TrainingId == id);
             if (training == null)
             {
-                return NotFound();
+                ViewData["NotFound"] = "The requested training is no longer available";
+                return View("~/Views/Home/Index.cshtml");
             }
 
             return View(training);
         }
 
         // GET: Trainings/Create
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
@@ -53,8 +73,9 @@ namespace ColmanGym.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Target")] Training training)
+        public async Task<IActionResult> Create([Bind("TrainingId,Name,Target")] Training training)
         {
             if (ModelState.IsValid)
             {
@@ -66,17 +87,20 @@ namespace ColmanGym.Controllers
         }
 
         // GET: Trainings/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
-                return NotFound();
+                ViewData["NotFound"] = "The requested training is no longer available";
+                return View("~/Views/Home/Index.cshtml");
             }
 
             var training = await _context.Trainings.FindAsync(id);
             if (training == null)
             {
-                return NotFound();
+                ViewData["NotFound"] = "The requested training is no longer available";
+                return View("~/Views/Home/Index.cshtml");
             }
             return View(training);
         }
@@ -85,14 +109,10 @@ namespace ColmanGym.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Name,Target")] Training training)
+        public async Task<IActionResult> Edit(int id, [Bind("TrainingId,Name,Target")] Training training)
         {
-            if (id != training.TrainingId)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
                 try
@@ -104,7 +124,8 @@ namespace ColmanGym.Controllers
                 {
                     if (!TrainingExists(training.TrainingId))
                     {
-                        return NotFound();
+                        ViewData["NotFound"] = "The requested training is no longer available";
+                        return View("~/Views/Home/Index.cshtml");
                     }
                     else
                     {
@@ -117,18 +138,22 @@ namespace ColmanGym.Controllers
         }
 
         // GET: Trainings/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
-                return NotFound();
+                ViewData["NotFound"] = "The requested training is no longer available";
+                return View("~/Views/Home/Index.cshtml");
             }
 
             var training = await _context.Trainings
                 .FirstOrDefaultAsync(m => m.TrainingId == id);
+
             if (training == null)
             {
-                return NotFound();
+                ViewData["NotFound"] = "The requested training is no longer available";
+                return View("~/Views/Home/Index.cshtml");
             }
 
             return View(training);
@@ -136,6 +161,7 @@ namespace ColmanGym.Controllers
 
         // POST: Trainings/Delete/5
         [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
