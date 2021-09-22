@@ -9,13 +9,13 @@ namespace ColmanGym.Models
     public class Meeting : IValidatableObject
     {
         [Key]
-        public int MeetId { get; set; }
+        public int MeetID { get; set; }
 
-        [ForeignKey("TrainingId")]
-        public int TrainingId { get; set; }
+        [ForeignKey("TrainingID")]
+        public int TrainingID { get; set; }
 
         [ForeignKey("UserId")]
-        public string TrainerId { get; set; }
+        public string TrainerID { get; set; }
 
         [DataType(DataType.DateTime)]
         public DateTime Date { get; set; }

@@ -78,7 +78,7 @@ namespace ColmanGym.Controllers
         }
 
         // GET: Trainers/Details/5
-        public async Task<IActionResult> Details(string? id)
+        public async Task<IActionResult> Details(string id)
         {
             if (id == null)
             {
@@ -204,7 +204,7 @@ namespace ColmanGym.Controllers
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
             var trainer = await _context.AspNetUsers.FindAsync(id);
-            _context.Meetings.RemoveRange(_context.Meetings.Where(m => m.TrainerId == trainer.Id));
+            _context.Meetings.RemoveRange(_context.Meetings.Where(m => m.TrainerID == trainer.Id));
             _context.AspNetUsers.Remove(trainer);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
@@ -216,9 +216,9 @@ namespace ColmanGym.Controllers
         {
             var trainerId = _userManager.GetUserId(User);
             var meetings = await _context.Meetings
-                    .Include(m => m.TrainingId)
+                    .Include(m => m.TrainingID)
                     .Include(m => m.Trainer)
-                    .Where(m => m.TrainerId == trainerId)
+                    .Where(m => m.TrainerID == trainerId)
                     .ToListAsync();
             return View(meetings);
         }
