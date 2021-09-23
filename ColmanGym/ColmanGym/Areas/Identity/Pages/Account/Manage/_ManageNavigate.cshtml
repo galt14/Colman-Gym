@@ -1,4 +1,4 @@
-﻿@inject Microsoft.AspNetCore.Identity.SignInManager<ColmanGym.Areas.Identity.Models.User> SignInManager
+﻿@inject Microsoft.AspNetCore.Identity.SignInManager<ColmanGym.Areas.Identity.Data.ApplicationUser> SignInManager
 @{
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
 }

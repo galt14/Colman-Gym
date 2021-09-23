@@ -10,7 +10,7 @@ using ColmanGym.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Identity;
-using ColmanGym.Areas.Identity.Models;
+using ColmanGym.Areas.Identity.Data;
 
 namespace ColmanGym
 {
@@ -29,7 +29,9 @@ namespace ColmanGym
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
 
             services.AddDbContext<ColmanGymContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("ColmanGymContext")));
+                options.UseSqlite("Data Source=App_Data/data.db"));
+
+            services.AddRazorPages();
 
             services.AddMvc(config =>
             {
@@ -72,11 +74,12 @@ namespace ColmanGym
             await CreateRoles(provider);
 
         }
+
         private async Task CreateRoles(IServiceProvider serviceProvider)
         {
             //initializing custom roles 
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-            var userManager = serviceProvider.GetRequiredService<UserManager<User>>();
+            var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
             string[] roleNames = { "Admin", "Trainer", "Customer" };
 
             IdentityResult roleResult;
@@ -93,27 +96,26 @@ namespace ColmanGym
             }
 
             // find the user with the admin email 
-            var _user = await userManager.FindByEmailAsync("admin@gym.com");
+            var user = await userManager.FindByEmailAsync("admin@gym.com");
 
             // check if the user exists
-            if (_user == null)
+            if (user == null)
             {
                 //Here you could create the super admin who will maintain the web app
-                var poweruser = new User
+                var poweruser = new ApplicationUser
                 {
                     UserName = "admin",
                     Email = "admin@gym.com",
                     FirstName = "admin",
                     LastName = "admin",
-                    PhoneNumber = "0504940886"
+                    PhoneNumber = "0504940886",
                 };
 
-                var createPowerUser = await userManager.CreateAsync(poweruser, "Gym123!");
+                var createPowerUser = await userManager.CreateAsync(poweruser, "Gym123**");
                 if (createPowerUser.Succeeded)
                 {
                     //here we tie the new user to the role
                     await userManager.AddToRoleAsync(poweruser, "Admin");
-
                 }
             }
         }

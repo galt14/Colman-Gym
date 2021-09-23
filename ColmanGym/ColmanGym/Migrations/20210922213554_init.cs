@@ -3,26 +3,26 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ColmanGym.Migrations
 {
-    public partial class Init : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Trainings",
+                name: "AspNetRoles",
                 columns: table => new
                 {
-                    TrainingId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(maxLength: 60, nullable: false),
-                    Target = table.Column<string>(maxLength: 60, nullable: false)
+                    Id = table.Column<string>(nullable: false),
+                    Name = table.Column<string>(nullable: true),
+                    NormalizedName = table.Column<string>(nullable: true),
+                    ConcurrencyStamp = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Trainings", x => x.TrainingId);
+                    table.PrimaryKey("PK_AspNetRoles", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "User",
+                name: "AspNetUsers",
                 columns: table => new
                 {
                     Id = table.Column<string>(nullable: false),
@@ -49,55 +49,72 @@ namespace ColmanGym.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_User", x => x.Id);
+                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Trainings",
+                columns: table => new
+                {
+                    TrainingId = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(maxLength: 60, nullable: false),
+                    Target = table.Column<string>(maxLength: 60, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Trainings", x => x.TrainingId);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Meetings",
                 columns: table => new
                 {
-                    MeetId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    TrainingId = table.Column<int>(nullable: false),
-                    TrainerId = table.Column<string>(nullable: true),
+                    MeetID = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    TrainingID = table.Column<int>(nullable: false),
+                    TrainerID = table.Column<string>(nullable: true),
                     Date = table.Column<DateTime>(nullable: false),
                     Price = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Meetings", x => x.MeetId);
+                    table.PrimaryKey("PK_Meetings", x => x.MeetID);
                     table.ForeignKey(
-                        name: "FK_Meetings_User_TrainerId",
-                        column: x => x.TrainerId,
-                        principalTable: "User",
+                        name: "FK_Meetings_AspNetUsers_TrainerID",
+                        column: x => x.TrainerID,
+                        principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Meetings_Trainings_TrainingId",
-                        column: x => x.TrainingId,
+                        name: "FK_Meetings_Trainings_TrainingID",
+                        column: x => x.TrainingID,
                         principalTable: "Trainings",
                         principalColumn: "TrainingId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Meetings_TrainerId",
+                name: "IX_Meetings_TrainerID",
                 table: "Meetings",
-                column: "TrainerId");
+                column: "TrainerID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Meetings_TrainingId",
+                name: "IX_Meetings_TrainingID",
                 table: "Meetings",
-                column: "TrainingId");
+                column: "TrainingID");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
                 name: "Meetings");
 
             migrationBuilder.DropTable(
-                name: "User");
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "Trainings");

@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace ColmanGym.Areas.Identity.Models
+namespace ColmanGym.Areas.Identity.Data
 {
-    public class User : IdentityUser
+    public class ApplicationUser : IdentityUser
     {
         [PersonalData]
         public string FirstName { get; set; }

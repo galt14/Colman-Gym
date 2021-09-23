@@ -1,4 +1,4 @@
-﻿using ColmanGym.Areas.Identity.Models;
+﻿using ColmanGym.Areas.Identity.Data;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -9,13 +9,13 @@ namespace ColmanGym.Models
     public class Meeting : IValidatableObject
     {
         [Key]
-        public int MeetId { get; set; }
+        public int MeetID { get; set; }
 
-        [ForeignKey("TrainingId")]
-        public int TrainingId { get; set; }
+        [ForeignKey("TrainingID")]
+        public int TrainingID { get; set; }
 
         [ForeignKey("UserId")]
-        public string TrainerId { get; set; }
+        public string TrainerID { get; set; }
 
         [DataType(DataType.DateTime)]
         public DateTime Date { get; set; }
@@ -24,7 +24,7 @@ namespace ColmanGym.Models
         [Range(0, 1000)]
         public int Price { get; set; }
 
-        public User Trainer { get; set; }
+        public ApplicationUser Trainer { get; set; }
         public Training Training { get; set; }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
