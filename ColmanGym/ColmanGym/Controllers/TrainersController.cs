@@ -1,4 +1,4 @@
-﻿using ColmanGym.Areas.Identity.Models;
+﻿using ColmanGym.Areas.Identity.Data;
 using ColmanGym.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -14,10 +14,9 @@ namespace ColmanGym.Controllers
     public class TrainersController : Controller
     {
         private readonly ColmanGymContext _context;
-        private readonly UserManager<User> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-
-        public TrainersController(ColmanGymContext context, UserManager<User> userManager)
+        public TrainersController(ColmanGymContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;
@@ -79,7 +78,7 @@ namespace ColmanGym.Controllers
         }
 
         // GET: Trainers/Details/5
-        public async Task<IActionResult> Details(string? id)
+        public async Task<IActionResult> Details(string id)
         {
             if (id == null)
             {
@@ -108,7 +107,7 @@ namespace ColmanGym.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Email,FirstName,LastName,PhoneNumber, Gender,Address,City")] User trainer)
+        public async Task<IActionResult> Create([Bind("Id,Email,FirstName,LastName,PhoneNumber, Gender,Address,City")] ApplicationUser trainer)
         {
             if (ModelState.IsValid)
             {
@@ -151,7 +150,7 @@ namespace ColmanGym.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,Email,FirstName,LastName,PhoneNumber,Gender,Address,City,IsTrainer")] User trainer)
+        public async Task<IActionResult> Edit(string id, [Bind("Id,Email,FirstName,LastName,PhoneNumber,Gender,Address,City,IsTrainer")] ApplicationUser trainer)
         {
             if (ModelState.IsValid)
             {
@@ -205,7 +204,7 @@ namespace ColmanGym.Controllers
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
             var trainer = await _context.AspNetUsers.FindAsync(id);
-            _context.Meetings.RemoveRange(_context.Meetings.Where(m => m.TrainerId == trainer.Id));
+            _context.Meetings.RemoveRange(_context.Meetings.Where(m => m.TrainerID == trainer.Id));
             _context.AspNetUsers.Remove(trainer);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
@@ -217,9 +216,9 @@ namespace ColmanGym.Controllers
         {
             var trainerId = _userManager.GetUserId(User);
             var meetings = await _context.Meetings
-                    .Include(m => m.TrainingId)
+                    .Include(m => m.TrainingID)
                     .Include(m => m.Trainer)
-                    .Where(m => m.TrainerId == trainerId)
+                    .Where(m => m.TrainerID == trainerId)
                     .ToListAsync();
             return View(meetings);
         }

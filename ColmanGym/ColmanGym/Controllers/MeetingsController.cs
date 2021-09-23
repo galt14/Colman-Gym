@@ -7,19 +7,19 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ColmanGym.Data;
 using ColmanGym.Models;
-using ColmanGym.Areas.Identity.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using ColmanGym.Areas.Identity.Data;
 
 namespace ColmanGym.Controllers
 {
     public class MeetingsController : Controller
     {
         private readonly ColmanGymContext _context;
-        private readonly UserManager<User> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 
 
-        public MeetingsController(ColmanGymContext context, UserManager<User> userManager)
+        public MeetingsController(ColmanGymContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;
@@ -34,7 +34,7 @@ namespace ColmanGym.Controllers
                 meetings = await _context.Meetings
                     .Include(m => m.Training)
                     .Include(m => m.Trainer)
-                    .Where(m => m.TrainingId == trainingId).ToListAsync();
+                    .Where(m => m.TrainingID == trainingId).ToListAsync();
             }
             else
             {
@@ -57,7 +57,7 @@ namespace ColmanGym.Controllers
             var meeting = await _context.Meetings
                 .Include(m => m.Training)
                 .Include(m => m.Trainer)
-                .FirstOrDefaultAsync(m => m.MeetId == id);
+                .FirstOrDefaultAsync(m => m.MeetID == id);
 
             if (meeting == null)
             {
@@ -65,7 +65,7 @@ namespace ColmanGym.Controllers
                 return View("~/Views/Home/Index.cshtml");
             }
 
-            if (User.IsInRole("Trainer") && _userManager.GetUserId(User) != meeting.TrainerId)
+            if (User.IsInRole("Trainer") && _userManager.GetUserId(User) != meeting.TrainerID)
             {
                 ViewData["AccessDenied"] = true;
             }
@@ -93,13 +93,13 @@ namespace ColmanGym.Controllers
         {
             if (ModelState.IsValid)
             {
-                var trainer = await _context.AspNetUsers.FindAsync(meeting.TrainerId);
+                var trainer = await _context.AspNetUsers.FindAsync(meeting.TrainerID);
                 if (trainer == null)
                 {
                     ViewData["NotFound"] = "The requested trainer is no longer available";
                     return View("~/Views/Home/Index.cshtml");
                 }
-                var trainingType = await _context.Trainings.FindAsync(meeting.TrainingId);
+                var trainingType = await _context.Trainings.FindAsync(meeting.TrainingID);
                 if (trainingType == null)
                 {
                     ViewData["NotFound"] = "The requested trainning method is no longer available";
@@ -112,7 +112,7 @@ namespace ColmanGym.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["TrainerId"] = new SelectList(_context.Set<User>(), "Id", "Id", meeting.TrainerId);
+            ViewData["TrainerId"] = new SelectList(_context.Set<ApplicationUser>(), "Id", "Id", meeting.TrainerID);
             ViewData["TrainerID"] = GetRelevantTrainersToSelect();
 
             return View(meeting);
@@ -131,7 +131,7 @@ namespace ColmanGym.Controllers
             var meeting = await _context.Meetings
                             .Include(m => m.Training)
                             .Include(m => m.Trainer)
-                            .FirstOrDefaultAsync(m => m.MeetId == id);
+                            .FirstOrDefaultAsync(m => m.MeetID == id);
 
             if (meeting == null)
             {
@@ -139,7 +139,7 @@ namespace ColmanGym.Controllers
                 return View("~/Views/Home/Index.cshtml");
             }
 
-            ViewData["TrainerId"] = new SelectList(_context.Set<User>(), "Id", "Id", meeting.TrainerId);
+            ViewData["TrainerId"] = new SelectList(_context.Set<ApplicationUser>(), "Id", "Id", meeting.TrainerID);
             ViewData["TrainerID"] = GetRelevantTrainersToSelect();
 
             return View(meeting);
@@ -157,24 +157,24 @@ namespace ColmanGym.Controllers
             {
                 try
                 {
-                    var existingMeeting = await _context.Meetings.FirstOrDefaultAsync(m => m.MeetId == id);
-                    if (User.IsInRole("Trainer") && existingMeeting != null && existingMeeting.TrainerId != this._userManager.GetUserId(User))
+                    var existingMeeting = await _context.Meetings.FirstOrDefaultAsync(m => m.MeetID == id);
+                    if (User.IsInRole("Trainer") && existingMeeting != null && existingMeeting.TrainerID != this._userManager.GetUserId(User))
                     {
                         ViewData["AccessDenied"] = true;
                         return View(meeting);
                     }
 
-                    var meeting2 = await _context.Meetings.Include(m => m.Training).Include(m => m.Trainer).FirstOrDefaultAsync(m => m.MeetId == id);
+                    var meeting2 = await _context.Meetings.Include(m => m.Training).Include(m => m.Trainer).FirstOrDefaultAsync(m => m.MeetID == id);
                     meeting2.Price = meeting.Price;
                     meeting2.Date = meeting.Date;
-                    meeting2.TrainingId = meeting.TrainingId;
-                    meeting2.TrainerId = meeting.TrainerId;
+                    meeting2.TrainingID = meeting.TrainingID;
+                    meeting2.TrainerID = meeting.TrainerID;
                     _context.Update(meeting2);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!MeetingExists(meeting.MeetId))
+                    if (!MeetingExists(meeting.MeetID))
                     {
                         ViewData["NotFound"] = "The requested meeting is no longer available";
                         return View("~/Views/Home/Index.cshtml");
@@ -187,7 +187,7 @@ namespace ColmanGym.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["TrainerId"] = new SelectList(_context.Set<User>(), "Id", "Id", meeting.TrainerId);
+            ViewData["TrainerId"] = new SelectList(_context.Set<ApplicationUser>(), "Id", "Id", meeting.TrainerID);
             ViewData["TrainerID"] = this.GetRelevantTrainersToSelect();
 
             return View(meeting);
@@ -206,7 +206,7 @@ namespace ColmanGym.Controllers
             var meeting = await _context.Meetings
                 .Include(m => m.Training)
                 .Include(m => m.Trainer)
-                .FirstOrDefaultAsync(m => m.MeetId == id);
+                .FirstOrDefaultAsync(m => m.MeetID == id);
 
             if (meeting == null)
             {
@@ -231,7 +231,7 @@ namespace ColmanGym.Controllers
 
         private bool MeetingExists(int id)
         {
-            return _context.Meetings.Any(e => e.MeetId == id);
+            return _context.Meetings.Any(e => e.MeetID == id);
         }
 
         private SelectList GetRelevantTrainersToSelect()
@@ -240,7 +240,7 @@ namespace ColmanGym.Controllers
             {
                 var currentUser = _context.AspNetUsers.Find(this._userManager.GetUserId(User));
 
-                return new SelectList(new List<User> { currentUser }, "Id", "Email");
+                return new SelectList(new List<ApplicationUser> { currentUser }, "Id", "Email");
             }
 
             return new SelectList(_context.AspNetUsers.Where(t => t.IsTrainer).ToList(), "Id", "Email");
