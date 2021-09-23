@@ -11,9 +11,13 @@ namespace ColmanGym.Data
 {
     public class ColmanGymContext : DbContext
     {
-        public ColmanGymContext (DbContextOptions<ColmanGymContext> options)
-            : base(options)
+        public ColmanGymContext (DbContextOptions<ColmanGymContext> options) : base(options)
         {
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseSqlite("Data Source=App_Data/data.db");
         }
 
         public DbSet<ColmanGym.Models.Training> Trainings { get; set; }

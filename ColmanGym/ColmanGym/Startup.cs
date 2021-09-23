@@ -29,7 +29,7 @@ namespace ColmanGym
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
 
             services.AddDbContext<ColmanGymContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("ColmanGymContext")));
+                options.UseSqlite("Data Source=App_Data/data.db"));
 
             services.AddRazorPages();
 
@@ -96,10 +96,10 @@ namespace ColmanGym
             }
 
             // find the user with the admin email 
-            var _user = await userManager.FindByEmailAsync("admin@gym.com");
+            var user = await userManager.FindByEmailAsync("admin@gym.com");
 
             // check if the user exists
-            if (_user == null)
+            if (user == null)
             {
                 //Here you could create the super admin who will maintain the web app
                 var poweruser = new ApplicationUser
@@ -108,15 +108,14 @@ namespace ColmanGym
                     Email = "admin@gym.com",
                     FirstName = "admin",
                     LastName = "admin",
-                    PhoneNumber = "0504940886"
+                    PhoneNumber = "0504940886",
                 };
 
-                var createPowerUser = await userManager.CreateAsync(poweruser, "Gym123!");
+                var createPowerUser = await userManager.CreateAsync(poweruser, "Gym123**");
                 if (createPowerUser.Succeeded)
                 {
                     //here we tie the new user to the role
                     await userManager.AddToRoleAsync(poweruser, "Admin");
-
                 }
             }
         }

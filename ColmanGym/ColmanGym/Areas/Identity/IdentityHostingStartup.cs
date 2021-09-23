@@ -15,7 +15,7 @@ namespace ColmanGym.Areas.Identity
         {
             builder.ConfigureServices((context, services) => {
                 services.AddDbContext<ColmanGymIdentityContext>(options =>
-                    options.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=ColmanGymContext-7dfba827-38a0-4e15-9548-005bf0a50357;Trusted_Connection=True;MultipleActiveResultSets=true"));
+                    options.UseSqlite("Data Source=App_Data/data.db"));
 
                 services.AddDefaultIdentity<ApplicationUser>()
                     .AddRoles<IdentityRole>()
