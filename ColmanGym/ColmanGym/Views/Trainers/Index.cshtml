@@ -52,7 +52,7 @@
 <div aria-live="polite" aria-atomic="true" style="position: relative;">
     <div id="modelToast" class="toast" style="position: fixed; top: 86px; right: 24px;" data-delay="10000">
         <div class="toast-header">
-            <strong class="mr-auto">Web Fitness</strong>
+            <strong class="mr-auto">ColmanGym</strong>
             <small>Error</small>
             <button id="closeToast" type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
@@ -85,7 +85,7 @@
 </div>
 <div id="table">
     <br />
-    <div class="web-fitness-card">
+    <div class="colman-gym-card">
         <table class="table">
             <thead>
                 <tr>
@@ -142,15 +142,15 @@
                             @if (this.User.IsInRole("Admin"))
                             {
                                 <span>
-                                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                                    <a class="button" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
 
                                 </span>
                             }
-                            <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                            <a class="button" asp-action="Details" asp-route-id="@item.Id">Details</a>
                             @if (this.User.IsInRole("Admin"))
                             {
                                 <span>
-                                    | <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                                    <a class="warning-button" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                                 </span>
                             }
                         </td>
