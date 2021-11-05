@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ColmanGym.Data;
 using ColmanGym.Models;
@@ -31,7 +29,7 @@ namespace ColmanGym.Controllers
             var trainings = from a in _context.Trainings
                         select a;
 
-            if (!String.IsNullOrEmpty(searchString))
+            if (!string.IsNullOrEmpty(searchString))
             {
                 trainings = trainings.Where(s => s.Name.Contains(searchString) || s.Target.Contains(searchString));
             }
@@ -83,6 +81,7 @@ namespace ColmanGym.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
             return View(training);
         }
 
@@ -166,8 +165,10 @@ namespace ColmanGym.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var training = await _context.Trainings.FindAsync(id);
+
             _context.Trainings.Remove(training);
             await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
 

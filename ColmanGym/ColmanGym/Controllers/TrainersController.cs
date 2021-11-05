@@ -33,10 +33,12 @@ namespace ColmanGym.Controllers
         {
             var users = from a in _context.AspNetUsers.Where(user => user.IsTrainer)
                         select a;
-            if (!String.IsNullOrEmpty(searchString))
+
+            if (!string.IsNullOrEmpty(searchString))
             {
                 users = users.Where(s => s.City.Contains(searchString) || s.Gender.Contains(searchString) || s.FirstName.Contains(searchString) || s.LastName.Contains(searchString) || s.Email.Contains(searchString) || s.Address.Contains(searchString) || s.PhoneNumber.Contains(searchString));
             }
+
             var ids = users.Select(s => s.Id);
             var usersToShow = await _context.AspNetUsers.Where(x => ids.Contains(x.Id)).ToListAsync();
 
@@ -50,21 +52,21 @@ namespace ColmanGym.Controllers
                           select a;
 
 
-            if (!String.IsNullOrEmpty(fname) || !String.IsNullOrEmpty(city) || !String.IsNullOrEmpty(gender) || !String.IsNullOrEmpty(phonenumber))
+            if (!string.IsNullOrEmpty(fname) || !string.IsNullOrEmpty(city) || !string.IsNullOrEmpty(gender) || !string.IsNullOrEmpty(phonenumber))
             {
-                if (!String.IsNullOrEmpty(fname))
+                if (!string.IsNullOrEmpty(fname))
                 {
                     trainer = trainer.Where(s => s.FirstName.Contains(fname));
                 }
-                if (!String.IsNullOrEmpty(city))
+                if (!string.IsNullOrEmpty(city))
                 {
                     trainer = trainer.Where(s => s.City.Contains(city));
                 }
-                if (!String.IsNullOrEmpty(gender))
+                if (!string.IsNullOrEmpty(gender))
                 {
                     trainer = trainer.Where(s => s.Gender.Contains(gender));
                 }
-                if (!String.IsNullOrEmpty(phonenumber))
+                if (!string.IsNullOrEmpty(phonenumber))
                 {
                     trainer = trainer.Where(s => s.PhoneNumber.Contains(phonenumber));
                 }
@@ -141,6 +143,7 @@ namespace ColmanGym.Controllers
                 ViewData["NotFound"] = "The requested trainer is no longer available";
                 return View("~/Views/Home/Index.cshtml");
             }
+
             return View(trainer);
         }
 
@@ -204,9 +207,11 @@ namespace ColmanGym.Controllers
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
             var trainer = await _context.AspNetUsers.FindAsync(id);
+
             _context.Meetings.RemoveRange(_context.Meetings.Where(m => m.TrainerID == trainer.Id));
             _context.AspNetUsers.Remove(trainer);
             await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
 
