@@ -112,7 +112,7 @@ namespace ColmanGym.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["TrainerId"] = new SelectList(_context.Set<ApplicationUser>(), "Id", "Id", meeting.TrainerID);
+            ViewData["TrainingID"] = new SelectList(_context.Trainings, "TrainingId", "Name");
             ViewData["TrainerID"] = GetRelevantTrainersToSelect();
 
             return View(meeting);
@@ -139,7 +139,7 @@ namespace ColmanGym.Controllers
                 return View("~/Views/Home/Index.cshtml");
             }
 
-            ViewData["TrainerId"] = new SelectList(_context.Set<ApplicationUser>(), "Id", "Id", meeting.TrainerID);
+            ViewData["TrainingID"] = new SelectList(_context.Trainings, "TrainingId", "Name");
             ViewData["TrainerID"] = GetRelevantTrainersToSelect();
 
             return View(meeting);
@@ -164,12 +164,12 @@ namespace ColmanGym.Controllers
                         return View(meeting);
                     }
 
-                    var meeting2 = await _context.Meetings.Include(m => m.Training).Include(m => m.Trainer).FirstOrDefaultAsync(m => m.MeetID == id);
-                    meeting2.Price = meeting.Price;
-                    meeting2.Date = meeting.Date;
-                    meeting2.TrainingID = meeting.TrainingID;
-                    meeting2.TrainerID = meeting.TrainerID;
-                    _context.Update(meeting2);
+                    var meetingToUpdate = await _context.Meetings.Include(m => m.Training).Include(m => m.Trainer).FirstOrDefaultAsync(m => m.MeetID == id);
+                    meetingToUpdate.Price = meeting.Price;
+                    meetingToUpdate.Date = meeting.Date;
+                    meetingToUpdate.TrainingID = meeting.TrainingID;
+                    meetingToUpdate.TrainerID = meeting.TrainerID;
+                    _context.Update(meetingToUpdate);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -187,7 +187,7 @@ namespace ColmanGym.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["TrainerId"] = new SelectList(_context.Set<ApplicationUser>(), "Id", "Id", meeting.TrainerID);
+            ViewData["TrainingID"] = new SelectList(_context.Trainings, "TrainingId", "Name");
             ViewData["TrainerID"] = this.GetRelevantTrainersToSelect();
 
             return View(meeting);
@@ -224,8 +224,10 @@ namespace ColmanGym.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var meeting = await _context.Meetings.FindAsync(id);
+
             _context.Meetings.Remove(meeting);
             await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
 
