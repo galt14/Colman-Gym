@@ -10,6 +10,9 @@ using ColmanGym.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using ColmanGym.Areas.Identity.Data;
+using System.Net.Http;
+using System.IO;
+using Newtonsoft.Json;
 
 namespace ColmanGym.Controllers
 {
@@ -17,12 +20,16 @@ namespace ColmanGym.Controllers
     {
         private readonly ColmanGymContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
-
+        private readonly HttpClient client;
 
         public MeetingsController(ColmanGymContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;
+
+            client = new HttpClient();
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Add("User-Agent", ".NET Foundation Repository Reporter");
         }
 
         // GET: Meetings
@@ -69,6 +76,8 @@ namespace ColmanGym.Controllers
             {
                 ViewData["AccessDenied"] = true;
             }
+
+            await GetMeetingCoordinates(meeting.Trainer.Address, meeting.Trainer.City);
 
             return View(meeting);
         }
@@ -246,6 +255,31 @@ namespace ColmanGym.Controllers
             }
 
             return new SelectList(_context.AspNetUsers.Where(t => t.IsTrainer).ToList(), "Id", "Email");
+        }
+
+        private async Task GetMeetingCoordinates(string address, string city)
+        {
+
+            string completeAddress = address + "," + city;
+            string apiKey = "16e1cbdfd87d0a";
+            string requestUrl = "https://eu1.locationiq.com/v1/search.php?key=" + apiKey + "&q=" + completeAddress + "&format=json";
+
+            HttpResponseMessage response = await client.GetAsync(requestUrl);
+            HttpContent responseContent = response.Content;
+            using var reader = new StreamReader(await responseContent.ReadAsStreamAsync());
+            string json = await reader.ReadToEndAsync();
+            try
+            {
+                List<Location> coordinates = JsonConvert.DeserializeObject<List<Location>>(json);
+
+
+                ViewBag.lat = coordinates[0].Lat;
+                ViewBag.lng = coordinates[0].Lon;
+            }
+            catch (Exception e)
+            {
+
+            }
         }
     }
 }

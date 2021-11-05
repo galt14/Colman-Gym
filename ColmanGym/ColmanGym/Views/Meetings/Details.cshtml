@@ -40,3 +40,19 @@
     <a asp-action="Edit" asp-route-id="@Model.MeetID">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>
+<div id="mapDiv" style="width:50%;height:400px;"></div>
+<script type="text/javascript">
+    var meetingAddress = new google.maps.LatLng(@ViewBag.lat, @ViewBag.lng);
+    var mapOptions = {
+        center: meetingAddress,
+                zoom: 15,
+                minZoom: 15,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+    var map = new google.maps.Map(document.getElementById("mapDiv"), mapOptions);
+    var marker = new google.maps.Marker({
+        position: meetingAddress,
+        animation: google.maps.Animation.BOUNCE,
+    });
+    marker.setMap(map);
+</script>
