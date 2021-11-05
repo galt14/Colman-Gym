@@ -2,10 +2,14 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome to ColmanGym</h1>
-    <h3>Your Best Entrance to Your Perfect Body</h3>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+    <div class="text-center">
+        <h1 class="display-4">Welcome to ColmanGym</h1>
+        <h3>Your Best Entrance to Your Perfect Body</h3>
+        <br />
+        <video style="width:100%; height:auto" controls>
+            <source src="@Url.Content("~/films/OurGym.mp4")" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
 
 

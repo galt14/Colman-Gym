@@ -216,10 +216,11 @@ namespace ColmanGym.Controllers
         {
             var trainerId = _userManager.GetUserId(User);
             var meetings = await _context.Meetings
-                    .Include(m => m.TrainingID)
-                    .Include(m => m.Trainer)
-                    .Where(m => m.TrainerID == trainerId)
-                    .ToListAsync();
+                .Include(m => m.Training)
+                .Include(m => m.Trainer)
+                .Where(m => m.TrainerID == trainerId)
+                .ToListAsync();
+
             return View(meetings);
         }
 
