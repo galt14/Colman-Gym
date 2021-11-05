@@ -5,7 +5,26 @@
 }
 
 <h1>Details</h1>
-
+<head>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAygSEScopZXkh1NB_stNOUE55NVG_WH74"></script>
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script>
+        var val;
+        var p;
+        var result;
+        $.ajax({
+            url: "https://api.ratesapi.io/api/latest?base=ILS&symbols=USD",
+            success: function (res) {
+                val = res.rates.USD;
+                $(document).ready(function () {
+                    p = parseInt($("#modelPrice").text());
+                    result = '($' + (val * p).toFixed(2) + ')';
+                    $("#dollarPrice").append(result);
+                });
+            }
+        })
+    </script>
+</head>
 <div>
     <h4>Meeting</h4>
     <hr />
@@ -31,8 +50,15 @@
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Price)
         </dt>
-        <dd class="col-sm-2">
-            @Html.DisplayFor(model => model.Price)
+        <dd>
+            <div id="price">
+                <div id="shekel" style="display: inline-block;">₪</div>
+                <div id="modelPrice" style="display: inline-block;">
+                    @Html.DisplayFor(model => model.Price)
+                </div>
+                <div id="dollarPrice" style="display: inline-block;">
+                </div>
+            </div>
         </dd>
     </dl>
 </div>
@@ -42,7 +68,7 @@
 </div>
 <div id="mapDiv" style="width:50%;height:400px;"></div>
 <script type="text/javascript">
-    var meetingAddress = new google.maps.LatLng(@ViewBag.lat, @ViewBag.lng);
+    var meetingAddress = new google.maps.LatLng(@ViewBag.Lat, @ViewBag.Lng);
     var mapOptions = {
         center: meetingAddress,
                 zoom: 15,

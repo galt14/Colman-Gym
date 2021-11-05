@@ -278,7 +278,19 @@ namespace ColmanGym.Controllers
             }
             catch (Exception e)
             {
+                completeAddress = "Eli Weisel 2, Rishon LeTsiyon";
+                requestUrl = "https://eu1.locationiq.com/v1/search.php?key=" + apiKey + "&q=" + completeAddress + "&format=json";
 
+                response = await client.GetAsync(requestUrl);
+                responseContent = response.Content;
+                using var reader2 = new StreamReader(await responseContent.ReadAsStreamAsync());
+                json = await reader2.ReadToEndAsync();
+
+                List<Location> coordinates = JsonConvert.DeserializeObject<List<Location>>(json);
+
+
+                ViewBag.lat = coordinates[0].Lat;
+                ViewBag.lng = coordinates[0].Lon;
             }
         }
     }
