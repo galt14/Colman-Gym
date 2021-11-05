@@ -7,8 +7,11 @@
 <h1>Index</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
-</p>
+    @if (this.User.IsInRole("Admin"))
+    {
+        <a asp-action="Create">Create New</a>
+    }
+    </p>
 <table class="table">
     <thead>
         <tr>
@@ -31,9 +34,19 @@
                 @Html.DisplayFor(modelItem => item.Target)
             </td>
             <td>
-                <a class="button" asp-action="Edit" asp-route-id="@item.TrainingId">Edit</a> 
-                <a class="button" asp-action="Details" asp-route-id="@item.TrainingId">Details</a> 
-                <a class="warning-button" asp-action="Delete" asp-route-id="@item.TrainingId">Delete</a>
+                @if (this.User.IsInRole("Admin"))
+                {
+
+                    @Html.ActionLink("Edit", "Edit", new { id = item.TrainingId }, new { @class = "button" })
+
+                }
+                <a class="button" asp-action="Details" asp-route-id="@item.TrainingId">Details</a>
+                @if (this.User.IsInRole("Admin"))
+                {
+
+                    @Html.ActionLink("Delete", "Delete", new { id = item.TrainingId }, new { @class = "warning-button" })
+
+                }
             </td>
         </tr>
 }

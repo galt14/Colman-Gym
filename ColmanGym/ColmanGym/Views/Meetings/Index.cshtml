@@ -31,7 +31,7 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.TrainingID)
+                    @Html.DisplayFor(modelItem => item.Training.Name)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Date)
@@ -43,9 +43,19 @@
                     @Html.DisplayFor(modelItem => item.Trainer.Id)
                 </td>
                 <td>
-                    <a asp-action="Edit" class="button" asp-route-id="@item.MeetID">Edit</a>
+                    @if (this.User.IsInRole("Admin"))
+                    {
+
+                        @Html.ActionLink("Edit", "Edit", new { id = item.MeetID }, new { @class = "button" })
+
+                    }
                     <a asp-action="Details" class="button" asp-route-id="@item.MeetID">Details</a>
-                    <a asp-action="Delete" class="warning-button" asp-route-id="@item.MeetID">Delete</a>
+                    @if (this.User.IsInRole("Admin"))
+                    {
+
+                        @Html.ActionLink("Delete", "Delete", new { id = item.MeetID }, new { @class = "button" })
+
+                    }
                 </td>
             </tr>
         }

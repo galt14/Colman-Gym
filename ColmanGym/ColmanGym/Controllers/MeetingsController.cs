@@ -89,7 +89,7 @@ namespace ColmanGym.Controllers
         [HttpPost]
         [Authorize(Roles = "Admin, Trainer")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("MeetId,TrainingId,TrainerId,Date,Price")] Meeting meeting)
+        public async Task<IActionResult> Create([Bind("MeetID,TrainingID,TrainerID,Date,Price")] Meeting meeting)
         {
             if (ModelState.IsValid)
             {
@@ -151,7 +151,7 @@ namespace ColmanGym.Controllers
         [HttpPost]
         [Authorize(Roles = "Admin, Trainer")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("MeetId,TrainingId,TrainerId,Date,Price")] Meeting meeting)
+        public async Task<IActionResult> Edit(int id, [Bind("MeetID,TrainingID,TrainerID,Date,Price")] Meeting meeting)
         {
             if (ModelState.IsValid)
             {

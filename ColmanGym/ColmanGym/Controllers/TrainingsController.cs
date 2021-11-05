@@ -73,7 +73,7 @@ namespace ColmanGym.Controllers
         [HttpPost]
         [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("TrainingId,Name,Target")] Training training)
+        public async Task<IActionResult> Create([Bind("TrainingID,Name,Target")] Training training)
         {
             if (ModelState.IsValid)
             {
@@ -110,7 +110,7 @@ namespace ColmanGym.Controllers
         [HttpPost]
         [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("TrainingId,Name,Target")] Training training)
+        public async Task<IActionResult> Edit(int id, [Bind("TrainingID,Name,Target")] Training training)
         {
             if (ModelState.IsValid)
             {
