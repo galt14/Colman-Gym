@@ -4,27 +4,28 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Meetings</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a class="button" asp-action="Create">Create New</a>
 </p>
 <table class="table">
     <thead>
-    <th>
-        @Html.DisplayNameFor(model => model.TrainingID)
-    </th>
-    <th>
-        @Html.DisplayNameFor(model => model.Date)
-    </th>
-    <th>
-        @Html.DisplayNameFor(model => model.Price)
-    </th>
-    <th>
-        @Html.DisplayNameFor(model => model.Trainer)
-    </th>
-    <th></th>
-
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.TrainingID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Date)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Trainer)
+            </th>
+            <th></th>
+        </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)

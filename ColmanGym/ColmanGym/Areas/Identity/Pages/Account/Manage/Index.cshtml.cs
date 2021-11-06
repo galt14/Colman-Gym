@@ -116,7 +116,6 @@ namespace ColmanGym.Areas.Identity.Pages.Account.Manage
             {
                 user.LastName = Input.LastName;
             }
-            
 
             if (Input.PhoneNumber != user.PhoneNumber)
             {

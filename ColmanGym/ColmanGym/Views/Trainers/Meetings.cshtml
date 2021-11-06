@@ -9,7 +9,7 @@
 @if (this.User.IsInRole("Admin") || this.User.IsInRole("Trainer"))
 {
     <p>
-        <a asp-controller="Meetings" asp-action="Create">Create New</a>
+        <a class="button" asp-controller="Meetings" asp-action="Create">Create New</a>
     </p>
 }
 
