@@ -12,17 +12,17 @@
         <li class="nav-item">
             <a id="manage" class="nav-link" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">
 
+
+                @UserManager.GetUserName(User)
                 @if (@user.IsTrainer)
                 {
-                    <span class="bg-info text-white rounded mr-1 px-2 py-1">Trainer</span>
+                    <span class="btn-primary text-white rounded mr-1 px-2 py-1">Trainer</span>
                 }
 
                 @if (this.User.IsInRole("Admin"))
                 {
                     <span class="bg-danger text-white rounded mr-1 px-2 py-1">Admin</span>
                 }
-
-                @UserManager.GetUserName(User)
             </a>
         </li>
         <li class="nav-item">

@@ -1,0 +1,80 @@
+﻿@model IEnumerable<Meeting>
+
+<link rel="stylesheet" type="text/css" href="~/css/home.css">
+
+<aside>
+    <h1>@ViewData["eventTypeName"] meetings</h1>
+</aside>
+
+<div class="secondSearch blackBorder mt-4">
+    <form class="form-inline" asp-controller="Meetings" asp-action="MultipleSearch" style="float:left;">
+        <input id="StartDate" class="form-control blackBorder mr-2" type="date" name="startDate" placeholder="StartDate">
+        <input class="form-control blackBorder mr-2" type="text" id="city" placeholder="City" name="city">
+        <input class="form-control blackBorder mr-2" type="text" id="Method" placeholder="Method" name="typename" value="@ViewData["eventTypeName"]">
+        <input class="form-control blackBorder mr-2" type="number" min="0" id="price" placeholder="Maximum Price" name="price">
+        <button type="submit" class="btn btn-dark submitButtons" id="search all meetings">Search any Meeting</button>
+    </form>
+</div>
+
+    <div class="web-fitness-card" style="margin-top: 80px">
+        <table class="table">
+            <tr>
+                <th>
+                    Topicmee
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Trainer)
+                </th>
+
+                <th>
+                    @Html.DisplayNameFor(model => model.Date)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Price)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Trainer.City)
+                </th>
+                <th></th>
+                <th></th>
+            </tr>
+            @foreach (var item in Model)
+            {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Training.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Trainer.FirstName) @Html.DisplayFor(modelItem => item.Trainer.LastName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Date)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price) ₪
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Trainer.City)
+            </td>
+            <td>
+                @if (this.User.IsInRole("Admin"))
+                {
+                    <span>
+                        @Html.ActionLink("Edit", "Edit", new { id = item.MeetID }) |
+                    </span>
+                }
+
+                @Html.ActionLink("Details", "Details", new { id = item.MeetID })
+
+                @if (this.User.IsInRole("Admin"))
+                {
+                    <span>
+                        | @Html.ActionLink("Delete", "Delete", new { id = item.MeetID })
+                    </span>
+                }
+            </td>
+        </tr>
+            }
+        </table>
+    </div>
+    

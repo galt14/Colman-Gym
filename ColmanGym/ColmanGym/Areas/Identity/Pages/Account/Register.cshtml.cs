@@ -1,12 +1,3 @@
-﻿using ColmanGym.Areas.Identity.Data;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -14,8 +5,18 @@ using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using ColmanGym.Areas.Identity.Data;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Logging;
 
-namespace ColmanGym.Areas.Identity.Pages
+namespace web_fitness.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
     public class RegisterModel : PageModel
@@ -23,15 +24,27 @@ namespace ColmanGym.Areas.Identity.Pages
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
-        private readonly IEmailSender _emailSender;
+        public List<SelectListItem> genderModels = new List<SelectListItem>()
+        {
+            new SelectListItem {Text="Male", Value="Male"},
+            new SelectListItem {Text="Female", Value="Female" },
+        };
 
-        public RegisterModel(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager,
-            ILogger<RegisterModel> logger, IEmailSender emailSender)
+        class Gender
+        {
+            public int GenderID { get; set; }
+            public string GenderName { get; set; }
+        }
+
+        public RegisterModel(
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
+            ILogger<RegisterModel> logger,
+            IEmailSender emailSender)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
-            _emailSender = emailSender;
         }
 
         [BindProperty]
@@ -93,16 +106,19 @@ namespace ColmanGym.Areas.Identity.Pages
             public string Gender { get; set; }
         }
 
+
         public async Task OnGetAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl = returnUrl ?? Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            string gender;
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser
@@ -115,7 +131,7 @@ namespace ColmanGym.Areas.Identity.Pages
                     PhoneNumber = Input.PhoneNumber,
                     Address = Input.Address,
                     City = Input.City,
-                    Gender = Input.Gender
+                    Gender = Input.Gender,
                 };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
@@ -124,14 +140,6 @@ namespace ColmanGym.Areas.Identity.Pages
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                    var callbackUrl = Url.Page(
-                        "/Account/ConfirmEmail",
-                        pageHandler: null,
-                        values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
-                        protocol: Request.Scheme);
-
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your user account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
                     if (user.IsTrainer)
                     {

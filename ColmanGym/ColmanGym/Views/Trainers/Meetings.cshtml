@@ -9,7 +9,7 @@
 @if (this.User.IsInRole("Admin") || this.User.IsInRole("Trainer"))
 {
     <p>
-        <a asp-controller="Meetings" asp-action="Create">Create New</a>
+        <a class="button" asp-controller="Meetings" asp-action="Create">Create New</a>
     </p>
 }
 
@@ -49,9 +49,16 @@
                         @Html.DisplayFor(modelItem => item.Price)
                     </td>
                     <td>
-                        @Html.ActionLink("Edit", "Edit", new { controller = "Meetings", id = item.MeetID }) |
-                        @Html.ActionLink("Details", "Details", new { controller = "Meetings", id = item.MeetID }) |
-                        @Html.ActionLink("Delete", "Delete", new { controller = "Meetings", id = item.MeetID })
+                        <a class="button">
+                            @Html.ActionLink("Edit", "Edit", new { controller = "Meetings", id = item.MeetID }, new { @class = "button" })
+                        </a>
+                        <a class="button">
+                            @Html.ActionLink("Details", "Details", new { controller = "Meetings", id = item.MeetID }, new { @class = "button" })
+                        </a>
+                        <a class="warning-button">
+                            @Html.ActionLink("Delete", "Delete", new { controller = "Meetings", id = item.MeetID }, new { @class = "warning-button" })
+                        </a>
+
                     </td>
 
                 </tr>
