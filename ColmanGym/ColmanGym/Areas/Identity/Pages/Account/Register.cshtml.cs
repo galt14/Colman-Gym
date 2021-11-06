@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 
@@ -24,6 +25,17 @@ namespace web_fitness.Areas.Identity.Pages.Account
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        public List<SelectListItem> genderModels = new List<SelectListItem>()
+        {
+            new SelectListItem {Text="Male", Value="Male"},
+            new SelectListItem {Text="Female", Value="Female" },
+        };
+
+        class Gender
+        {
+            public int GenderID { get; set; }
+            public string GenderName { get; set; }
+        }
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
@@ -35,6 +47,7 @@ namespace web_fitness.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+
         }
 
         [BindProperty]
@@ -96,19 +109,23 @@ namespace web_fitness.Areas.Identity.Pages.Account
             public string Gender { get; set; }
         }
 
+
         public async Task OnGetAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl = returnUrl ?? Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            string gender;
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser {
+                var user = new ApplicationUser
+                {
                     UserName = Input.Email,
                     Email = Input.Email,
                     FirstName = Input.FirstName,
@@ -117,7 +134,7 @@ namespace web_fitness.Areas.Identity.Pages.Account
                     PhoneNumber = Input.PhoneNumber,
                     Address = Input.Address,
                     City = Input.City,
-                    Gender = Input.Gender
+                    Gender = Input.Gender,
                 };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
@@ -135,7 +152,7 @@ namespace web_fitness.Areas.Identity.Pages.Account
                     await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
                         $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
-                    if(user.IsTrainer)
+                    if (user.IsTrainer)
                     {
                         await _userManager.AddToRoleAsync(user, "Trainer");
                     }

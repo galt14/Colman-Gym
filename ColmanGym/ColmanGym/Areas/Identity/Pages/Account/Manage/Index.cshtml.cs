@@ -1,9 +1,11 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using ColmanGym.Areas.Identity.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ColmanGym.Areas.Identity.Pages.Account.Manage
 {
@@ -11,6 +13,12 @@ namespace ColmanGym.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        public List<SelectListItem> genderModels = new List<SelectListItem>()
+        {
+            new SelectListItem {Text="Male", Value="Male"},
+            new SelectListItem {Text="Female", Value="Female" },
+        };
+
 
         public IndexModel(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
@@ -108,11 +116,7 @@ namespace ColmanGym.Areas.Identity.Pages.Account.Manage
             {
                 user.LastName = Input.LastName;
             }
-
-            if (Input.IsTrainer != user.IsTrainer)
-            {
-                user.IsTrainer = Input.IsTrainer;
-            }
+            
 
             if (Input.PhoneNumber != user.PhoneNumber)
             {
