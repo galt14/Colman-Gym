@@ -141,20 +141,19 @@ namespace ColmanGym.Controllers
                 _context.Add(meeting);
                 await _context.SaveChangesAsync();
 
-                string key = "akxTSxiQEn71TEr5rVGBR0h5X";
-                string secret = "m64Zmb17CnQkU9neanVycVJE2t9ZZ2GxvDmsOJUZMqMR8Vg3C4";
-                string token = "1456947607692054532-N2SeTDwPmcBFWKGhGcYnKAxlJtzvfS";
-                string tokenSecret = "EUAKnJolGcw75OjmXCKNyYIaeEIEJuByaKhUkaTT2XV6r";
+                string key = "ho8dFDK6vtZwipsKU7azDxSWK";
+                string secret = "hvlhvtoZlfpnaweJiLVguMPkO1YRnhdWp7hN38qIaZgth5361p";
+                string token = "1456947607692054532-54sC8cyFCiYeOEtcrimbBnJtR7aEaa";
+                string tokenSecret = "gGBfcwFeq2OcUK7zmTXVI18p931YnS7Q9idaplkn0wRKv";
                 var service = new TweetSharp.TwitterService(key, secret);
                 service.AuthenticateWith(token, tokenSecret);
                 TwitterUser user = service.VerifyCredentials(new VerifyCredentialsOptions());
                 var traintype = await _context.Trainings
                    .FirstOrDefaultAsync(m => m.TrainingId == meeting.TrainingID);
                 string message = string.Format("New {0} meeting is available at {1} {2}", traintype.Name, meeting.Date.ToShortDateString(), meeting.Date.ToShortTimeString());
-                string message2 = "lavie test";
                 var result = service.SendTweet(new SendTweetOptions
                 {
-                    Status = message2
+                    Status = message
                 });
 
 
