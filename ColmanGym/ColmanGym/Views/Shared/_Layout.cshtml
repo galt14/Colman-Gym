@@ -59,7 +59,7 @@
                             @if (this.User.IsInRole("Admin"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Graphs">Statistics</a>
+                                    <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Graphs">Statistics</a>
                                 </li>
                             }
                         </ul>
@@ -80,6 +80,7 @@
     <footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2021 - ColmanGym - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <a href="https://twitter.com/colman_gym">Our Twitter Page</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
