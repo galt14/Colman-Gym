@@ -19,7 +19,7 @@ namespace ColmanGym.Controllers
             _logger = logger;
         }
 
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Graphs()
         {
             return View();

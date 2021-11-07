@@ -26,6 +26,10 @@ namespace ColmanGym.Controllers
         private readonly Clusterer _clusterer;
         static readonly string trainByCityPath = Path.Combine(Environment.CurrentDirectory, "wwwroot", "graph_data", "TrainbyCity.csv");
         static readonly string CountMeetingsPath = Path.Combine(Environment.CurrentDirectory, "wwwroot", "graph_data", "CountMeetingbyType.csv");
+        private string key;
+        private string secret;
+        private string token;
+        private string tokenSecret;
 
         public MeetingsController(ColmanGymContext context, UserManager<ApplicationUser> userManager)
         {
@@ -41,7 +45,11 @@ namespace ColmanGym.Controllers
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Add("User-Agent", ".NET Foundation Repository Reporter");
 
-           
+            key = "ho8dFDK6vtZwipsKU7azDxSWK";
+            secret = "hvlhvtoZlfpnaweJiLVguMPkO1YRnhdWp7hN38qIaZgth5361p";
+            token = "1456947607692054532-54sC8cyFCiYeOEtcrimbBnJtR7aEaa";
+            tokenSecret = "gGBfcwFeq2OcUK7zmTXVI18p931YnS7Q9idaplkn0wRKv";
+
         }
 
         // GET: Meetings
@@ -141,10 +149,7 @@ namespace ColmanGym.Controllers
                 _context.Add(meeting);
                 await _context.SaveChangesAsync();
 
-                string key = "ho8dFDK6vtZwipsKU7azDxSWK";
-                string secret = "hvlhvtoZlfpnaweJiLVguMPkO1YRnhdWp7hN38qIaZgth5361p";
-                string token = "1456947607692054532-54sC8cyFCiYeOEtcrimbBnJtR7aEaa";
-                string tokenSecret = "gGBfcwFeq2OcUK7zmTXVI18p931YnS7Q9idaplkn0wRKv";
+                
                 var service = new TweetSharp.TwitterService(key, secret);
                 service.AuthenticateWith(token, tokenSecret);
                 TwitterUser user = service.VerifyCredentials(new VerifyCredentialsOptions());
