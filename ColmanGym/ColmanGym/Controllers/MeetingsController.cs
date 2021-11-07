@@ -13,6 +13,8 @@ using ColmanGym.Areas.Identity.Data;
 using System.Net.Http;
 using System.IO;
 using Newtonsoft.Json;
+using TweetSharp;
+using ColmanGym.MeetingsClusterer;
 
 namespace ColmanGym.Controllers
 {
@@ -21,15 +23,25 @@ namespace ColmanGym.Controllers
         private readonly ColmanGymContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly HttpClient client;
+        private readonly Clusterer _clusterer;
+        static readonly string trainByCityPath = Path.Combine(Environment.CurrentDirectory, "wwwroot", "graph_data", "TrainbyCity.csv");
+        static readonly string CountMeetingsPath = Path.Combine(Environment.CurrentDirectory, "wwwroot", "graph_data", "CountMeetingbyType.csv");
 
         public MeetingsController(ColmanGymContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;
+            _clusterer = new Clusterer(_context);
+            _clusterer.CreateModel();
+
+            TrainbyCityGraph();
+            CountMeetingbyTypeGraph();
 
             client = new HttpClient();
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Add("User-Agent", ".NET Foundation Repository Reporter");
+
+           
         }
 
         // GET: Meetings
@@ -77,6 +89,17 @@ namespace ColmanGym.Controllers
                 ViewData["AccessDenied"] = true;
             }
 
+            try
+            {
+                MeetingPrediction prediction = _clusterer.Predict(meeting);
+                List<Meeting> MeetingsInSameCluster = await GetMeetingsInCluster(prediction.PredictedClusterId);
+                MeetingsInSameCluster.Remove(meeting);
+                ViewBag.otherMeetings = MeetingsInSameCluster;
+            }
+            catch
+            {
+                Console.Write("failed to cluster");
+            }
             await GetMeetingCoordinates(meeting.Trainer.Address, meeting.Trainer.City);
 
             return View(meeting);
@@ -117,6 +140,22 @@ namespace ColmanGym.Controllers
 
                 _context.Add(meeting);
                 await _context.SaveChangesAsync();
+
+                string key = "akxTSxiQEn71TEr5rVGBR0h5X";
+                string secret = "m64Zmb17CnQkU9neanVycVJE2t9ZZ2GxvDmsOJUZMqMR8Vg3C4";
+                string token = "1456947607692054532-N2SeTDwPmcBFWKGhGcYnKAxlJtzvfS";
+                string tokenSecret = "EUAKnJolGcw75OjmXCKNyYIaeEIEJuByaKhUkaTT2XV6r";
+                var service = new TweetSharp.TwitterService(key, secret);
+                service.AuthenticateWith(token, tokenSecret);
+                TwitterUser user = service.VerifyCredentials(new VerifyCredentialsOptions());
+                var traintype = await _context.Trainings
+                   .FirstOrDefaultAsync(m => m.TrainingId == meeting.TrainingID);
+                string message = string.Format("New {0} meeting is available at {1} {2}", traintype.Name, meeting.Date.ToShortDateString(), meeting.Date.ToShortTimeString());
+                //var result = service.SendTweet(new SendTweetOptions
+                //{
+                //    Status = message
+                //});
+
 
                 return RedirectToAction(nameof(Index));
             }
@@ -292,6 +331,89 @@ namespace ColmanGym.Controllers
                 ViewBag.lat = coordinates[0].Lat;
                 ViewBag.lng = coordinates[0].Lon;
             }
+        }
+        public void TrainbyCityGraph() //create data for the first graph
+        { //calculate the train meetings  per city
+            var trainPerCity = from s in _context.Meetings
+                               join a in _context.AspNetUsers
+                               on s.TrainerID equals a.Id
+                               group a by a.City into city_count
+                               select new
+                               {
+                                   key = city_count.Key,
+                                   Count = city_count.Count()
+                               };
+            try
+            {
+                StreamWriter writer;
+                FileStream file = System.IO.File.Open(trainByCityPath, FileMode.OpenOrCreate);
+                file.Close();
+                writer = new StreamWriter(trainByCityPath);
+                writer.Write("City" + "," + "train\n");
+                foreach (var s in trainPerCity)
+                {
+                    writer.Write(s.key + "," + s.Count + "\n");
+                    writer.Flush();
+                }
+                file.Close();
+                writer.Close();
+            }
+            catch
+            {
+            }
+
+        }
+        public void CountMeetingbyTypeGraph() //create data for the second graph
+        {
+            //calculate the amount of meetings by the number of training types
+            var MeetingbyType = from s in _context.Meetings
+                                join ty in _context.Trainings
+                                on s.TrainingID equals ty.TrainingId
+                                group ty by ty.Name into meetings_count
+                                select new
+                                {
+                                    key = meetings_count.Key,
+                                    Count = meetings_count.Count()
+                                };
+
+            try
+            {
+                StreamWriter writer;
+                FileStream file = System.IO.File.Open(CountMeetingsPath, FileMode.OpenOrCreate);
+                file.Close();
+                writer = new StreamWriter(CountMeetingsPath);
+                writer.Write("Training_type" + "," + "AmountOfMeetings\n");
+                foreach (var a in MeetingbyType)
+                {
+                    writer.Write(a.key + "," + a.Count + "\n");
+                    writer.Flush();
+                }
+                file.Close();
+                writer.Close();
+            }
+            catch
+            {
+            }
+        }
+        async private Task<List<Meeting>> GetMeetingsInCluster(uint clusterId)
+        {
+            List<Meeting> meetings_in_same_cluster = new List<Meeting>();
+            foreach (Meeting m in await _context.Meetings.Include(m => m.Trainer).Include(m => m.Training).ToListAsync())
+            {
+                try
+                {
+                    MeetingPrediction meetingPrediction = _clusterer.Predict(m);
+                    if (meetingPrediction.PredictedClusterId == clusterId)
+
+                        meetings_in_same_cluster.Add(m);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
+            }
+
+            return meetings_in_same_cluster;
         }
     }
 }
