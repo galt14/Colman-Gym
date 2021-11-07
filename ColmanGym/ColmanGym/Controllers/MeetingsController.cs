@@ -151,10 +151,11 @@ namespace ColmanGym.Controllers
                 var traintype = await _context.Trainings
                    .FirstOrDefaultAsync(m => m.TrainingId == meeting.TrainingID);
                 string message = string.Format("New {0} meeting is available at {1} {2}", traintype.Name, meeting.Date.ToShortDateString(), meeting.Date.ToShortTimeString());
-                //var result = service.SendTweet(new SendTweetOptions
-                //{
-                //    Status = message
-                //});
+                string message2 = "lavie test";
+                var result = service.SendTweet(new SendTweetOptions
+                {
+                    Status = message2
+                });
 
 
                 return RedirectToAction(nameof(Index));
