@@ -131,6 +131,4 @@ a.warning-button {
     appearance: button;
     text-decoration: none;
     color: #ff0f0f;
-    border: 2px solid red;
-    border-radius: 25px;
 }
