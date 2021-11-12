@@ -13,9 +13,9 @@
         var p;
         var result;
         $.ajax({
-            url: "https://api.ratesapi.io/api/latest?base=ILS&symbols=USD",
+            url: "https://api.exchangerate.host/convert?from=ILS&to=USD",
             success: function (res) {
-                val = res.rates.USD;
+                val = res.result;
                 $(document).ready(function () {
                     p = parseInt($("#modelPrice").text());
                     result = '($' + (val * p).toFixed(2) + ')';
