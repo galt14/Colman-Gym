@@ -16,6 +16,8 @@ a {
     color: #fff;
     background-color: #660066;
     border-color: #1861ac;
+    border: 2px solid red;
+    border-radius: 25px;
 }
 
 .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
@@ -87,7 +89,7 @@ td, th {
 
 tr {
     display: block;
-    cursor:default;
+    cursor: default;
 }
 
     tr:hover {
@@ -112,7 +114,7 @@ tr {
 .toast-header {
     background-color: #ff0f0f;
     color: black;
-    opacity:0.8;
+    opacity: 0.8;
 }
 
 a.button {
@@ -129,4 +131,6 @@ a.warning-button {
     appearance: button;
     text-decoration: none;
     color: #ff0f0f;
+    border: 2px solid red;
+    border-radius: 25px;
 }
