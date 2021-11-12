@@ -63,3 +63,33 @@
         }
     </tbody>
 </table>
+
+<br />
+
+<h4>Meetings Per Trainer</h4>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Count
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in ViewBag.Count)
+        {
+            <tr>
+                <td>
+                    @item.Key
+                </td>
+                <td>
+                    @item.Value
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
