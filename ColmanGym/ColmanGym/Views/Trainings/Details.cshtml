@@ -25,6 +25,10 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.TrainingId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+    @if (this.User.IsInRole("Admin"))
+    {
+        <a class="button" asp-action="Edit" asp-route-id="@Model.TrainingId">Edit</a>
+    }
+        <br />
+        <a class="button" asp-action="Index">Back to List</a>
+    </div>

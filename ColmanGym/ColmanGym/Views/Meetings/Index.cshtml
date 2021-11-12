@@ -4,16 +4,16 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Meetings</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a class="button" asp-action="Create">Create New</a>
 </p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.TrainingID)
+                Traning Name
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Date)
@@ -28,26 +28,68 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.TrainingID)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Date)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Trainer.Id)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.MeetID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.MeetID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.MeetID">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Training.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                    <span>₪</span>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Trainer.FirstName)
+                </td>
+                <td>
+                    @if (this.User.IsInRole("Admin"))
+                    {
+
+                        @Html.ActionLink("Edit", "Edit", new { id = item.MeetID }, new { @class = "button" })
+
+                    }
+                    <a asp-action="Details" class="button" asp-route-id="@item.MeetID">Details</a>
+                    @if (this.User.IsInRole("Admin"))
+                    {
+
+                        @Html.ActionLink("Delete", "Delete", new { id = item.MeetID }, new { @class = "button" })
+
+                    }
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+<br />
+
+<h4>Meetings Per Trainer</h4>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Count
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in ViewBag.Count)
+        {
+            <tr>
+                <td>
+                    @item.Key
+                </td>
+                <td>
+                    @item.Value
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
