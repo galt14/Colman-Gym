@@ -13,7 +13,7 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.TrainingID)
+                Traning Name
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Date)
@@ -39,9 +39,10 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Price)
+                    <span>₪</span>
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Trainer.Id)
+                    @Html.DisplayFor(modelItem => item.Trainer.FirstName)
                 </td>
                 <td>
                     @if (this.User.IsInRole("Admin"))
