@@ -94,30 +94,6 @@ namespace ColmanGym
                     roleResult = await roleManager.CreateAsync(new IdentityRole(roleName));
                 }
             }
-
-            // find the user with the admin email 
-            var user = await userManager.FindByEmailAsync("admin@gym.com");
-
-            // check if the user exists
-            if (user == null)
-            {
-                //Here you could create the super admin who will maintain the web app
-                var poweruser = new ApplicationUser
-                {
-                    UserName = "admin",
-                    Email = "admin@gym.com",
-                    FirstName = "admin",
-                    LastName = "admin",
-                    PhoneNumber = "0504940886",
-                };
-
-                var createPowerUser = await userManager.CreateAsync(poweruser, "Gym123**");
-                if (createPowerUser.Succeeded)
-                {
-                    //here we tie the new user to the role
-                    await userManager.AddToRoleAsync(poweruser, "Admin");
-                }
-            }
         }
     }
 }
