@@ -13,12 +13,12 @@
     </p>
 }
 
-<div class="colman-gym-card">
+<div>
     <table class="table">
         <thead>
             <tr>
                 <th>
-                    Topic
+                    Training Name
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.Trainer)
@@ -47,6 +47,7 @@
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Price)
+                        <span>₪</span>
                     </td>
                     <td>
                         <a class="button">
