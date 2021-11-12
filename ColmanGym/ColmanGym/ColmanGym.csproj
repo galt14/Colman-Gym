@@ -32,7 +32,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\films\" />
     <Folder Include="wwwroot\graph_data\" />
   </ItemGroup>
 
