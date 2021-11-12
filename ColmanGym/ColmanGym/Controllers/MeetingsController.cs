@@ -69,6 +69,14 @@ namespace ColmanGym.Controllers
                     .Include(m => m.Training)
                     .Include(m => m.Trainer).ToListAsync();
             }
+
+            var ms = await _context.Meetings.Include(m => m.Trainer).ToListAsync();
+
+            var trainerMeetingsCount = ms.GroupBy(meeting => $"{meeting.Trainer.FirstName} {meeting.Trainer.LastName}")
+                .ToDictionary(x => x.Key, x => x.Count());
+
+            ViewBag.Count = trainerMeetingsCount;
+
             return View(meetings);
         }
 
