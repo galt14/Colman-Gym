@@ -16,8 +16,6 @@ a {
     color: #fff;
     background-color: #660066;
     border-color: #1861ac;
-    border: 2px solid red;
-    border-radius: 25px;
 }
 
 .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
