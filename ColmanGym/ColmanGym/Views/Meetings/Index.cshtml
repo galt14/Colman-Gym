@@ -55,7 +55,7 @@
                     @if (this.User.IsInRole("Admin"))
                     {
 
-                        @Html.ActionLink("Delete", "Delete", new { id = item.MeetID }, new { @class = "button" })
+                        @Html.ActionLink("Delete", "Delete", new { id = item.MeetID }, new { @class = "warning-button" })
 
                     }
                 </td>
